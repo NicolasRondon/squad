@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel
 
 from jokes_api.database import engine
-from jokes_api.modules.base.entities import Joke  # noqa
+from jokes_api.models import Joke  # noqa
 
 
 def create_db_and_tables():

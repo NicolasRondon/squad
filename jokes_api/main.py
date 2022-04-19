@@ -7,13 +7,8 @@ from sqlmodel import Session, select
 
 from jokes_api.create_db import create_db_and_tables
 from jokes_api.database import get_session
-from jokes_api.modules.base.entities import (
-    Joke,
-    JokeCreate,
-    JokeRead,
-    JokeUpdate,
-    ResultJoke,
-)
+from jokes_api.models import Joke, JokeCreate, JokeRead, JokeUpdate
+from jokes_api.modules.base.entities import ResultJoke
 from jokes_api.modules.base.factory import jokes_factory
 
 app = FastAPI()
@@ -24,7 +19,7 @@ def on_startup():
     create_db_and_tables()
 
 
-@app.post("/jokes/", response_model=JokeRead)
+@app.post("/jokes/", response_model=JokeRead, tags=["jokes"])
 def joke(*, session: Session = Depends(get_session), joke: JokeCreate):
     """
     Add joke to own database
@@ -39,7 +34,7 @@ def joke(*, session: Session = Depends(get_session), joke: JokeCreate):
     return db_joke
 
 
-@app.get("/jokes/", response_model=List[JokeRead])
+@app.get("/jokes/", response_model=List[JokeRead], tags=["jokes"])
 def read_jokes(
     *,
     session: Session = Depends(get_session),
@@ -50,7 +45,7 @@ def read_jokes(
     return jokes
 
 
-@app.patch("/jokes/{joke_id}", response_model=JokeRead)
+@app.patch("/jokes/{joke_id}", response_model=JokeRead, tags=["jokes"])
 def update_joke(
     *, session: Session = Depends(get_session), joke_id: int, joke: JokeUpdate
 ):
@@ -66,7 +61,7 @@ def update_joke(
     return db_joke
 
 
-@app.delete("/jokes/{joke_id}")
+@app.delete("/jokes/{joke_id}", tags=["jokes"])
 def delete_joke(*, session: Session = Depends(get_session), joke_id: int):
     joke = session.get(Joke, joke_id)
     if not joke:
@@ -76,7 +71,7 @@ def delete_joke(*, session: Session = Depends(get_session), joke_id: int):
     return {"ok": True}
 
 
-@app.get("/random_jokes/", response_model=ResultJoke)
+@app.get("/random_jokes/", response_model=ResultJoke, tags=["random jokes"])
 def random_joke(type_joke: Optional[str] = None):
     """Get a random joke from **https://api.chucknorris.io/**
      or  **https://icanhazdadjoke.com/api**
@@ -95,7 +90,7 @@ def random_joke(type_joke: Optional[str] = None):
         raise HTTPException(status_code=400, detail="Options are only Dad and Chuck")
 
 
-@app.get("/least_common_multiple/")
+@app.get("/least_common_multiple/", tags=["math"])
 def get_least_common_multiple(numbers: List[int] = Query(None)):
     if not numbers:
         raise HTTPException(status_code=400, detail="At least send one integer")
@@ -103,7 +98,7 @@ def get_least_common_multiple(numbers: List[int] = Query(None)):
     return {"least_common_multiple": least_common_multiple}
 
 
-@app.get("/plus_one/")
+@app.get("/plus_one/", tags=["math"])
 def get_number_plus_one(number: int = None):
     if not number:
         raise HTTPException(status_code=400, detail="At least send one integer")
