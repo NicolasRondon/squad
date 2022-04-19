@@ -1,12 +1,8 @@
 import functools
 from abc import ABC, abstractmethod
-from typing import List, Tuple
 
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
-import settings
 from jokes_api.modules.base.entities import ResultJoke
 from jokes_api.modules.base.exceptions import JokeServiceError
 
@@ -28,21 +24,6 @@ class GetContentJokeAPI(ABC):
             bool: true if the connection with the integration is successfull
         """
         pass
-
-
-class TimeoutHTTPAdapter(HTTPAdapter):
-    def __init__(self, *args, **kwargs):
-        self.timeout = settings.DEFAULT_REQUESTS_TIMEOUT
-        if "timeout" in kwargs:
-            self.timeout = kwargs["timeout"]
-            del kwargs["timeout"]
-        super().__init__(*args, **kwargs)
-
-    def send(self, request, **kwargs):
-        timeout = kwargs.get("timeout")
-        if timeout is None:
-            kwargs["timeout"] = self.timeout
-        return super().send(request, **kwargs)
 
 
 class Service:
@@ -85,31 +66,3 @@ class Service:
             return inner
 
         return outer
-
-    def retry(
-        self,
-        status_forcelist: Tuple[int, int],
-        allowed_methods: List[str],
-        backoff_factor: int,
-        total_retries: int,
-    ):
-        """
-        Function to retry an endpoint request
-        :param status_forcelist: A set of integer HTTP status codes that we should force a retry on.
-        :param allowed_methods: White list for HTTP Methods
-        :param backoff_factor: A backoff factor to apply between attempts after the second try
-        (most errors are resolved immediately by a second try without a
-        delay).
-        :param total_retries: Total of retries
-        :return:
-        """
-        retry_strategy = Retry(
-            total=total_retries,
-            status_forcelist=status_forcelist,
-            allowed_methods=allowed_methods,
-            backoff_factor=backoff_factor,
-        )
-
-        adapter = TimeoutHTTPAdapter(timeout=7, max_retries=retry_strategy)
-        self.client.mount("https://", adapter=adapter)
-        self.client.mount("http://", adapter=adapter)

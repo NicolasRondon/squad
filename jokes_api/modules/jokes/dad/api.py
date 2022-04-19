@@ -13,12 +13,6 @@ class DadJokesService(Service):
     def __init__(self):
         self.api_url = API_URL
         self.client = requests.Session()
-        self.retry(
-            status_forcelist=(504, 429),
-            allowed_methods=["GET"],
-            backoff_factor=2,
-            total_retries=2,
-        )
 
     @Service.response_exception(message="Error getting random joke from dad jokes")
     def get_joke(self) -> dict:
