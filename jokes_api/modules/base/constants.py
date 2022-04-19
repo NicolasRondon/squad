@@ -2,3 +2,5 @@ JOKE_SERVICE_ERROR_CODE = 1613
 ERROR_MESSAGES = {
     JOKE_SERVICE_ERROR_CODE: "Joke Service error",
 }
+CHUCK = "Chuck"
+DAD = "Dad"

@@ -2,10 +2,10 @@ import requests
 
 from jokes_api.modules.base.abstract import GetContentJokeAPI, Service
 from jokes_api.modules.base.entities import ResultJoke
-from jokes_api.modules.jokes.dad.constants import API_URL
+from jokes_api.modules.jokes.chuck.constants import API_URL
 
 
-class DadJokesService(Service):
+class ChuckJokesService(Service):
     """
     Class to get info and content from dad jokes api
     """
@@ -25,14 +25,14 @@ class DadJokesService(Service):
         """
         Get a random dad  joke
         """
-        response = self.client.get(self.api_url, headers={"Accept": "application/json"})
+        response = self.client.get(self.api_url)
         response = response.json()
         return response
 
 
-class DadJokesInstance(GetContentJokeAPI):
+class ChuckJokesInstance(GetContentJokeAPI):
     def check_connection(self) -> bool:
-        dad_jokes_service = DadJokesService()
+        dad_jokes_service = ChuckJokesService()
         try:
             response = dad_jokes_service.get_joke()
         except Exception:
@@ -43,9 +43,13 @@ class DadJokesInstance(GetContentJokeAPI):
             return response.get("success", False)
 
     def get_random_joke(self) -> ResultJoke:
-        dad_jokes_service = DadJokesService()
+        dad_jokes_service = ChuckJokesService()
         joke_data = dad_jokes_service.get_joke()
         joke_id = joke_data.get("id", None)
-        joke_text = joke_data.get("joke", None)
-        response = ResultJoke(id_joke=joke_id, joke=joke_text, type_joke="Dad jokes")
+        joke_text = joke_data.get("value", None)
+        icon = joke_data.get("icon_url", None)
+        url = joke_data.get("url", None)
+        response = ResultJoke(
+            id_joke=joke_id, joke=joke_text, icon=icon, url=url, type_joke="Chuck jokes"
+        )
         return response
