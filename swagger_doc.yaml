@@ -1,0 +1,313 @@
+openapi: 3.0.2
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /jokes/:
+    get:
+      tags:
+        - jokes
+      summary: Read Jokes
+      operationId: read_jokes_jokes__get
+      parameters:
+        - required: false
+          schema:
+            title: Offset
+            type: integer
+            default: 0
+          name: offset
+          in: query
+        - required: false
+          schema:
+            title: Limit
+            type: integer
+            default: 100
+          name: limit
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Read Jokes Jokes  Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/JokeRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+        - jokes
+      summary: Joke
+      description: |-
+        Add joke to own database
+        - **joke**: Funny joke text
+        - **icon**: Funny joke url image
+        - **joke**: Funny joke url
+      operationId: joke_jokes__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JokeCreate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JokeRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /jokes/{joke_id}:
+    delete:
+      tags:
+        - jokes
+      summary: Delete Joke
+      operationId: delete_joke_jokes__joke_id__delete
+      parameters:
+        - required: true
+          schema:
+            title: Joke Id
+            type: integer
+          name: joke_id
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+        - jokes
+      summary: Update Joke
+      operationId: update_joke_jokes__joke_id__patch
+      parameters:
+        - required: true
+          schema:
+            title: Joke Id
+            type: integer
+          name: joke_id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JokeUpdate'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JokeRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /random_jokes/:
+    get:
+      tags:
+        - random jokes
+      summary: Random Joke
+      description: |-
+        Get a random joke from **https://api.chucknorris.io/**
+         or  **https://icanhazdadjoke.com/api**
+        - **type_joke**: query param options are (Chuck, Dad)
+      operationId: random_joke_random_jokes__get
+      parameters:
+        - required: false
+          schema:
+            title: Type Joke
+            type: string
+          name: type_joke
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultJoke'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /least_common_multiple/:
+    get:
+      tags:
+        - math
+      summary: Get Least Common Multiple
+      operationId: get_least_common_multiple_least_common_multiple__get
+      parameters:
+        - required: false
+          schema:
+            title: Numbers
+            type: array
+            items:
+              type: integer
+          name: numbers
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /plus_one/:
+    get:
+      tags:
+        - math
+      summary: Get Number Plus One
+      operationId: get_number_plus_one_plus_one__get
+      parameters:
+        - required: false
+          schema:
+            title: Number
+            type: integer
+          name: number
+          in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    JokeCreate:
+      title: JokeCreate
+      required:
+        - joke
+      type: object
+      properties:
+        icon:
+          title: Icon
+          type: string
+        joke:
+          title: Joke
+          type: string
+        url:
+          title: Url
+          type: string
+    JokeRead:
+      title: JokeRead
+      required:
+        - joke
+        - id
+      type: object
+      properties:
+        icon:
+          title: Icon
+          type: string
+        joke:
+          title: Joke
+          type: string
+        url:
+          title: Url
+          type: string
+        id:
+          title: Id
+          type: integer
+    JokeUpdate:
+      title: JokeUpdate
+      required:
+        - joke
+      type: object
+      properties:
+        icon:
+          title: Icon
+          type: string
+        joke:
+          title: Joke
+          type: string
+        url:
+          title: Url
+          type: string
+    ResultJoke:
+      title: ResultJoke
+      required:
+        - id_joke
+        - joke
+        - type_joke
+      type: object
+      properties:
+        icon:
+          title: Icon
+          type: string
+        id_joke:
+          title: Id Joke
+          type: string
+        joke:
+          title: Joke
+          type: string
+        url:
+          title: Url
+          type: string
+        type_joke:
+          title: Type Joke
+          type: string
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
