@@ -41,6 +41,9 @@ def read_jokes(
     offset: int = 0,
     limit: int = Query(default=100, lte=100),
 ):
+    """
+    Get all Jokes from own database
+    """
     jokes = session.exec(select(Joke).offset(offset).limit(limit)).all()
     return jokes
 
@@ -49,6 +52,10 @@ def read_jokes(
 def update_joke(
     *, session: Session = Depends(get_session), joke_id: int, joke: JokeUpdate
 ):
+    """
+    Update joke from own database
+    - **joke**: New joke text
+    """
     db_joke = session.get(Joke, joke_id)
     if not db_joke:
         raise HTTPException(status_code=404, detail="Joke not found")
@@ -63,6 +70,10 @@ def update_joke(
 
 @app.delete("/jokes/{joke_id}", tags=["jokes"])
 def delete_joke(*, session: Session = Depends(get_session), joke_id: int):
+    """
+    Delete joke
+    -**joke_id**: id to delete
+    """
     joke = session.get(Joke, joke_id)
     if not joke:
         raise HTTPException(status_code=404, detail="Joke not found")
@@ -92,6 +103,10 @@ def random_joke(type_joke: Optional[str] = None):
 
 @app.get("/least_common_multiple/", tags=["math"])
 def get_least_common_multiple(numbers: List[int] = Query(None)):
+    """
+    Get least common multiple from list of numbers
+    **numbers**: Numbers to get lcm
+    """
     if not numbers:
         raise HTTPException(status_code=400, detail="At least send one integer")
     least_common_multiple = math.lcm(*numbers)
@@ -100,6 +115,9 @@ def get_least_common_multiple(numbers: List[int] = Query(None)):
 
 @app.get("/plus_one/", tags=["math"])
 def get_number_plus_one(number: int = None):
+    """
+    Get numbers plus one
+    """
     if not number:
         raise HTTPException(status_code=400, detail="At least send one integer")
     number += 1
