@@ -89,14 +89,14 @@ class Service:
     def retry(
         self,
         status_forcelist: Tuple[int, int],
-        method_whitelist: List[str],
+        allowed_methods: List[str],
         backoff_factor: int,
         total_retries: int,
     ):
         """
         Function to retry an endpoint request
         :param status_forcelist: A set of integer HTTP status codes that we should force a retry on.
-        :param method_whitelist: White list for HTTP Methods
+        :param allowed_methods: White list for HTTP Methods
         :param backoff_factor: A backoff factor to apply between attempts after the second try
         (most errors are resolved immediately by a second try without a
         delay).
@@ -106,7 +106,7 @@ class Service:
         retry_strategy = Retry(
             total=total_retries,
             status_forcelist=status_forcelist,
-            method_whitelist=method_whitelist,
+            allowed_methods=allowed_methods,
             backoff_factor=backoff_factor,
         )
 

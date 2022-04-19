@@ -15,7 +15,7 @@ app = FastAPI()
 
 
 @app.on_event("startup")
-def on_startup():
+def on_startup():  # pragma: no cover
     create_db_and_tables()
 
 

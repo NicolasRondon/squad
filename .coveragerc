@@ -1,0 +1,12 @@
+[run]
+branch = True
+data_file = .coverage
+source =
+    jokes_api/
+omit =
+    tests/
+    */create_db.py
+    */database.py
+
+[report]
+fail_under = 76

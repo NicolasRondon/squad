@@ -15,7 +15,7 @@ class DadJokesService(Service):
         self.client = requests.Session()
         self.retry(
             status_forcelist=(504, 429),
-            method_whitelist=["GET"],
+            allowed_methods=["GET"],
             backoff_factor=2,
             total_retries=2,
         )
